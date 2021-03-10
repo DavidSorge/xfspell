@@ -1,8 +1,11 @@
 # xfspell — the Transformer Spell Checker
 
+This is a fork from mhagiwara's [xfspell](https://github.com/mhagiwara/xfspell);
+This version is being modified to handle longer text input, and to better work with a batch of texts.
+
 ![xfspell — the Transformer Spell Checker](xfspell.png)
 
-This is a Transformer-based English spell checker trained on 7M+ generated parallel sentences. 
+This is a Transformer-based English spell checker trained on 7M+ generated parallel sentences.
 
 ## Usage
 
@@ -10,7 +13,7 @@ This is a Transformer-based English spell checker trained on 7M+ generated paral
 - Create a virtual environment (e.g., `python3 -m venv .pyenv`)
 - Install requirements (e.g., `pip install -r requirements.txt`)
 - Download [the pretrained model](https://xfspell.s3.amazonaws.com/models/model7m.tar.gz) and extract the content (`tar zxvf model7m.tar.gz`)
-- Run: 
+- Run:
 ```
 $ echo "tisimptant too spll chck ths dcment." \
     | python src/tokenize.py \
@@ -19,7 +22,7 @@ $ echo "tisimptant too spll chck ths dcment." \
     --source-lang fr --target-lang en --beam 10 \
    | python src/format_fairseq_output.py
 It's important to spell check this document.
-``` 
+```
 
 ## Fun examples
 
