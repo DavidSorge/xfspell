@@ -1,6 +1,5 @@
 import json
 import sys
-from src.tokenize import tokenize_characters
 
 
 def main():
