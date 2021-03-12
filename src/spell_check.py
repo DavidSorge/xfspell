@@ -4,11 +4,12 @@ from subprocess import Popen, PIPE
 import pexpect
 
 
-ALL_CHARS = set("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,!?'-")
+ALL_CHARS = set("0123456789abcdefghijklmnopqrstuvwxyz")
+ALL_CHARS.update("ABCDEFGHIJKLMNOPQRSTUVWXYZ .,!?'-")
 
 
 def split_long(text):
-    text = re.sub('-','', text)
+    text = re.sub('-', '', text)
     text = re.sub(' +', ' ', text).strip()
     lines = wrap(text, 200, break_long_words=False)
     return lines
@@ -83,9 +84,9 @@ def spell_check_alt(text):
 
     for line in lines:
         p.sendline(get_tokens(line))
-        p.expect('\d\r\n')
+        p.expect(r'\d\r\n')
         out = p.before
-        out = out.decode().split('\r\n')
+        out = out.decode().split(r'\r\n')
         out = format_output(out)
         corrected_lines.append(out)
 
