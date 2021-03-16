@@ -4,8 +4,8 @@ from subprocess import Popen, PIPE
 import pexpect
 import pandas as pd
 from tqdm import tqdm
+from pathlib import Path
 
-tqdm.pandas()
 
 ALL_CHARS = set("0123456789abcdefghijklmnopqrstuvwxyz")
 ALL_CHARS.update("ABCDEFGHIJKLMNOPQRSTUVWXYZ .,!?'-")
@@ -60,13 +60,16 @@ def format_output(lines):
 
 
 def spell_check(text):
-    lines = split_long(text)
     corrected_lines = []
-    for line in lines:
-        line_toks = get_tokens(line)
-        corrected_toks = get_fairseq_output(line_toks)
-        out = format_output(corrected_toks)
-        corrected_lines.append(out)
+
+    if type(text) == 'str':
+        lines = split_long(text)
+
+        for line in lines:
+            line_toks = get_tokens(line)
+            corrected_toks = get_fairseq_output(line_toks)
+            out = format_output(corrected_toks)
+            corrected_lines.append(out)
     return ' '.join(corrected_lines)
 
 
@@ -103,7 +106,11 @@ def spell_check_alt(p, doc):
 if __name__ == '__main__':
     p = initialize_spell_check()
     unrest_texts = pd.read_csv('unrest_texts.csv', index_col=0)
-    unrest_texts['spellchecked_text'] = \
-        unrest_texts.article_text.progress_apply(lambda x:
-                                                 spell_check_alt(p, x))
-    unrest_texts.to_csv('unrest_texts_update.csv')
+    for article in tqdm(unrest_texts.index.to_list()):
+        path = Path('temp', str(article) + '.txt')
+
+        if not path.exists():
+            text = unrest_texts.article_text.loc[article]
+            new_text = spell_check(text)
+            with open(path, 'w') as f:
+                f.write(new_text)
