@@ -60,16 +60,13 @@ def format_output(lines):
 
 
 def spell_check(text):
+    lines = split_long(text)
     corrected_lines = []
-
-    if type(text) == 'str':
-        lines = split_long(text)
-
-        for line in lines:
-            line_toks = get_tokens(line)
-            corrected_toks = get_fairseq_output(line_toks)
-            out = format_output(corrected_toks)
-            corrected_lines.append(out)
+    for line in lines:
+        line_toks = get_tokens(line)
+        corrected_toks = get_fairseq_output(line_toks)
+        out = format_output(corrected_toks)
+        corrected_lines.append(out)
     return ' '.join(corrected_lines)
 
 
@@ -106,6 +103,7 @@ def spell_check_alt(p, doc):
 if __name__ == '__main__':
     p = initialize_spell_check()
     unrest_texts = pd.read_csv('unrest_texts.csv', index_col=0)
+    unrest_texts = unrest_texts[~unrest_texts.index.duplicated(keep='first')]
     for article in tqdm(unrest_texts.index.to_list()):
         path = Path('temp', str(article) + '.txt')
 
